@@ -8,9 +8,10 @@
 ### ========================
 
 ### >>> 1. data saving
-setwd("/home/yhw/bioinfo/project-wb/hs_gastruloids/analysis")
-#load("scripts/downstream_v1.RData")
+setwd("/home/yhw/bioinfo/project-wb")
+load("CodeData/WB_downstream_v1.RData")
 #save.image("scripts/downstream_v1.RData")
+.libPaths("/home/laborer/yhw_shared/library")
 
 
 ### >>> 2. packages loading
@@ -2574,7 +2575,8 @@ gas.d5before.merge.sub@meta.data[,c("Sample_Name", "CellType")] %>%
         axis.text.y  = element_text(face="plain", colour = "#000000", size = 12, angle = 0),
         panel.grid = element_blank())
 dev.off()
-pdf(file.path(outdir, "Scatter_plot_to_show_marker_expression_of_gastruloid_development_before_d5_merged.pdf"), height = 20, width = 25)
+pdf(file.path(outdir, "Scatter_plot_to_show_marker_expression_of_gastruloid_development_before_d5_merged.pdf"), 
+    height = 20, width = 25)
 FeaturePlot(gas.d5before.merge.sub, features = c("SOX2", "POU5F1", "OTX2", "CDH1",
                                                  "TBXT", "MIXL1", "SP5", "FST",
                                                  "SOX17", "FOXA2", "GSC", "CST1",
@@ -3149,9 +3151,9 @@ for (i in 9:12) {
 
 
 
-### ===================
-### 8th part: Organizer ----
-### ===================
+### ====================
+### 10th part: Organizer ----
+### ====================
 
 
 ### >>> 1. Setting output directory
@@ -4309,9 +4311,9 @@ for (i in as.character(unique(organizer.markers.merge$cluster))) {
 }
 
 
-### =========================
-### 9th part: FOXH1 KO RNAseq ----
-### =========================
+### ===========================
+### 11th part: FOXH1 KO RNA-seq ----
+### ===========================
 
 
 ### >>> 1. Setting output directory
@@ -4449,10 +4451,8 @@ for (i in names(deg)) {
 
 
 
-
-
 ### =================================
-### 10th part: Deconvolution analysis ----
+### 12th part: Deconvolution analysis ----
 ### =================================
 
 ### >>> 1. Setting output dir
@@ -4502,7 +4502,7 @@ test <- Pipe.BSEQsc(
 
 
 ### ==========================================
-### 11th part: Comparison with other embryoids ----
+### 13th part: Comparison with other embryoids ----
 ### ==========================================
 
 ### >>> 1. Setting output dir
@@ -4738,47 +4738,9 @@ CorrComparePlot(ExpressionTableSpecies1 = expr.1$RNA, DEgenesSpecies1 = hvg.1,
                 pd.order = "original", Height = 15, Width = 15)
 
 
-### >>>
-# Identification of the central intermediate in the extra-embryonic to embryonic endoderm transition through single-cell transcriptomics
-
-
-
-### ======================
-### 12th part: Li WeiQiang ----
-### ======================
-
-### >>> 1. Setting output dir
-outdir <- file.path(getwd(), "graphs/jobs")
-if (! dir.exists(outdir)) {
-  dir.create(outdir, recursive = T)
-}
-
-
-### >>> 2. URD analysis
-li.sr <- readRDS("/home/yhw/bioinfo/project-wb/hs_gastruloids/analysis/graphs/sub_day8_final.rds")
-li.sr.tsne <- Embeddings(li.sr, reduction = "tsne")
-li.urd <- list()
-li.urd[["knn42_sigma0_INP_MP_NSC"]] <- URD.Btree(sr.obj = li.sr, group.by = c("cell_type"),
-                                                 tip.gp = c("INP", "MP", "NSC"), start.cell = "HMMR+",
-                                                 urd.knn = 42, urd.sigma = NULL, embedding = li.sr.tsne,
-                                                 group.col = list(cell_type = c(`HMMR+` = "#A6CEE3", INP = "#1F78B4",
-                                                                                MP = "#B2DF8A", NSC = "#33A02C")),
-                                                 pt.gene = c("SOX2"),
-                                                 res.out = "graphs/jobs/urd/knn42_sigma0_INP_MP_NSC")
-li.tree <- list()
-li.tree[["knn42_sigma0_INP_MP_NSC"]] <- URD.Atree(urd = li.urd[["knn42_sigma0_INP_MP_NSC"]],
-                                                  tip.gp = c("INP", "MP", "NSC"),
-                                                  tip.cluster = c("7", "5", "9"),
-                                                  group.by = c("cell_type"),
-                                                  group.col = list(cell_type = c(`HMMR+` = "#A6CEE3", INP = "#1F78B4",
-                                                                                 MP = "#B2DF8A", NSC = "#33A02C")),
-                                                  pt.gene = c("SOX2"),
-                                                  res.out = "graphs/jobs/urd/knn42_sigma0_INP_MP_NSC")
-
-
 
 ### ==============================
-### 13th part: Endoderm + Mesoderm ----
+### 14th part: Endoderm + Mesoderm ----
 ### ==============================
 
 ### >>> 1. Setting output dir
@@ -5345,7 +5307,7 @@ for (i in names(deg.meso)) {
 
 
 ### =======================
-### 14th part: NMP analysis ----
+### 15th part: NMP analysis ----
 ### =======================
 
 ### >>> 1. Setting output dir
@@ -5775,7 +5737,7 @@ rm(pd, pd.meta, i)
 
 
 ### ========================
-### 15th part: NSCs analysis ----
+### 16th part: NSCs analysis ----
 ### ========================
 
 ### >>> 1. Setting output dir
@@ -6000,7 +5962,7 @@ for (type in names(marker.gene)) {
 
 
 ### =============================
-### 16th part: FOXH1 KO scRNA-seq ----
+### 17th part: FOXH1 KO scRNA-seq ----
 ### =============================
 
 
@@ -6177,6 +6139,7 @@ sr.foxh1.gas@meta.data <- sr.foxh1.gas@meta.data %>%
                               RNA_snn_res.2 %in% c(15) ~ "definitive endoderm",
                               RNA_snn_res.2 %in% c(21) ~ "extraembryonic mesenchymal cells"))
 pdf(file.path(res.out, "FOXH1_KO_GAS_clustering_umap_plot_after_annotation_after_correction.pdf"), height = 5, width = 20)
+library(Seurat)
 DimPlot(sr.foxh1.gas, reduction = "umap", group.by = c("Sample_Name", "RNA_snn_res.2", "CellType"), 
         cols = mk.col, label = T, pt.size = 1)
 dev.off()
@@ -6295,3 +6258,27 @@ for (type in names(marker.gene)) {
 }
 
 
+
+### ====================
+### 18th part: Save data ----
+### ====================
+
+saveRDS(sr.list, "/home/yhw/bioinfo/project-wb/CodeData/sr.list.rds")
+saveRDS(sr.list.org, "/home/yhw/bioinfo/project-wb/CodeData/sr.list.org.rds")
+saveRDS(sr.pdt, "/home/yhw/bioinfo/project-wb/CodeData/sr.pdt.rds")
+saveRDS(sr.pdt.hs.mk, "/home/yhw/bioinfo/project-wb/CodeData/sr.pdt.hs.mk.rds")
+saveRDS(sr.pdt.mk, "/home/yhw/bioinfo/project-wb/CodeData/sr.pdt.mk.rds")
+saveRDS(sr.merge, "/home/yhw/bioinfo/project-wb/CodeData/sr.merge.rds")
+saveRDS(sr.endo.merge, "/home/yhw/bioinfo/project-wb/CodeData/sr.endo.merge.rds")
+saveRDS(sr.meso.merge, "/home/yhw/bioinfo/project-wb/CodeData/sr.meso.merge.rds")
+saveRDS(sr.endo, "/home/yhw/bioinfo/project-wb/CodeData/sr.endo.rds")
+saveRDS(sr.meso, "/home/yhw/bioinfo/project-wb/CodeData/sr.meso.rds")
+saveRDS(sr.gas, "/home/yhw/bioinfo/project-wb/CodeData/sr.gas.rds")
+saveRDS(sr.org, "/home/yhw/bioinfo/project-wb/CodeData/sr.org.rds")
+saveRDS(sr.foxh1, "/home/yhw/bioinfo/project-wb/CodeData/sr.foxh1.rds")
+saveRDS(sr.foxh1.gas, "/home/yhw/bioinfo/project-wb/CodeData/sr.foxh1.gas.rds")
+saveRDS(gas.merge, "/home/yhw/bioinfo/project-wb/CodeData/gas.merge.rds")
+saveRDS(gas.d5before.merge, "/home/yhw/bioinfo/project-wb/CodeData/gas.d5before.merge.rds")
+saveRDS(gas.d5before.merge.urd, "/home/yhw/bioinfo/project-wb/CodeData/gas.d5before.merge.urd.rds")
+saveRDS(gene.count$foxh1.ko, "/home/yhw/bioinfo/project-wb/CodeData/foxh1.ko.RNAseq.count.rds")
+save.image("/home/yhw/bioinfo/project-wb/CodeData/WB_downstream_v1.RData")
